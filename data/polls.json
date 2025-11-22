@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "question": "¿Quién ganará el mundial 2026?",
+    "options": [
+      {
+        "id": 1,
+        "text": "Marc Márquez",
+        "votes": 1
+      },
+      {
+        "id": 2,
+        "text": "Pecco Bagnaia",
+        "votes": 0
+      },
+      {
+        "id": 3,
+        "text": "Jorge Martín",
+        "votes": 0
+      },
+      {
+        "id": 4,
+        "text": "Otro",
+        "votes": 0
+      }
+    ],
+    "status": "open"
+  }
+]
