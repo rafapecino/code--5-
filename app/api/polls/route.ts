@@ -14,7 +14,7 @@ export async function GET() {
       return NextResponse.json({ error: 'No hay encuestas activas' }, { status: 404 });
     }
 
-    return NextResponse.json(activePoll);
+    return NextResponse.json([activePoll]);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Error al obtener la encuesta' }, { status: 500 });
