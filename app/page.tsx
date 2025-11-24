@@ -6,6 +6,7 @@ import { YouTubeStats } from "@/All/components/youtube-stats"
 import { YouTubeVideos } from "@/All/components/youtube-videos"
 import { Logo } from "@/All/components/logo"
 import { Youtube } from "lucide-react"
+import { LatestVideo } from "@/All/components/latest-video"
 
 export default async function Home() {
   const channelStats = await getChannelStats()
@@ -81,37 +82,10 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="px-4 sm:px-6 lg:px-8 py-20 bg-background border-t border-border">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-balance">La Diferencia PecinoGP</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  title: "Análisis Técnicos Profundos",
-                  description:
-                    "Desglose detallado de estrategias de carrera, configuración de motos y movimientos tácticos de los pilotos.",
-                  icon: "⚙️",
-                },
-                {
-                  title: "Directos Comentados en Vivo",
-                  description:
-                    "Cobertura exclusiva de cada Gran Premio con análisis en tiempo real y comentarios expertos.",
-                  icon: "🔴",
-                },
-                {
-                  title: "Cobertura Completa del Campeonato",
-                  description: "MotoGP, Moto2, Moto3 y motociclismo mundial en un solo lugar con toda la pasión.",
-                  icon: "🏍️",
-                },
-              ].map((feature, index) => (
-                <div key={index} className="bg-secondary p-8 rounded-lg border border-border hover:border-primary transition-colors group text-center">
-                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform mx-auto">{feature.icon}</div>
-                  <h3 className="text-xl font-bold mb-3 text-primary">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
+        <section className="flex justify-center px-4 py-20 border-t sm:px-6 lg:px-8 bg-background border-border">
+            <div className="w-full max-w-2xl">
+                <LatestVideo latestVideo={videos[0] || null} />
             </div>
-          </div>
         </section>
 
         {/* Latest Content Section */}

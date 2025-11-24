@@ -17,6 +17,12 @@ export interface YouTubeVideo {
   publishedAt: string
   viewCount: string
   channelTitle: string
+  error?: string
+}
+
+export interface LiveStream {
+  isLive: boolean;
+  videoId?: string;
 }
 
 // Datos de fallback para desarrollo sin API
@@ -24,6 +30,10 @@ const FALLBACK_STATS: YouTubeChannel = {
   subscriberCount: "245000",
   viewCount: "12500000",
   videoCount: "156",
+}
+
+const FALLBACK_LIVE_STATUS: LiveStream = {
+  isLive: false,
 }
 
 const FALLBACK_VIDEOS: YouTubeVideo[] = [
@@ -113,8 +123,19 @@ export async function getLatestVideos(maxResults: number = 6): Promise<YouTubeVi
     )
 
     if (!response.ok) {
-      console.error("Error fetching videos:", response.status, response.statusText)
-      return FALLBACK_VIDEOS.slice(0, maxResults)
+      const errorBody = await response.text();
+      console.error("Error fetching videos:", response.status, response.statusText, errorBody);
+      const errorMessage = `Error ${response.status}: Ha ocurrido un problema al conectar con YouTube. Es posible que la clave de la API no sea válida o esté restringida.`;
+      return [{
+        id: "error",
+        title: "Error al cargar vídeo",
+        description: errorMessage,
+        thumbnail: "",
+        publishedAt: new Date().toISOString(),
+        viewCount: "0",
+        channelTitle: "",
+        error: errorMessage,
+      }];
     }
 
     const data = await response.json()
@@ -139,6 +160,39 @@ export async function getLatestVideos(maxResults: number = 6): Promise<YouTubeVi
   } catch (error) {
     console.error("Error fetching YouTube videos:", error)
     return FALLBACK_VIDEOS.slice(0, maxResults)
+  }
+}
+
+export async function getLiveStream(): Promise<LiveStream> {
+  try {
+    if (!YOUTUBE_API_KEY || !CHANNEL_ID) {
+      console.warn("YouTube API credentials not configured, using fallback data for live status");
+      return FALLBACK_LIVE_STATUS;
+    }
+
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${YOUTUBE_API_KEY}`,
+      { next: { revalidate: 60 } } // Revalidate every minute
+    );
+
+    if (!response.ok) {
+      console.error("Error fetching live stream status:", response.status, response.statusText);
+      return FALLBACK_LIVE_STATUS;
+    }
+
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      return {
+        isLive: true,
+        videoId: data.items[0].id.videoId,
+      };
+    }
+
+    return { isLive: false };
+  } catch (error) {
+    console.error("Error fetching YouTube live stream status:", error);
+    return FALLBACK_LIVE_STATUS;
   }
 }
 
