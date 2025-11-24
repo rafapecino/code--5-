@@ -28,10 +28,20 @@ export function QuickPoll() {
       const response = await fetch("/api/polls");
       if (response.ok) {
         const data = await response.json();
-        setPoll(data);
-        const storedVote = localStorage.getItem(`poll_${data.id}_voted`);
-        if (storedVote) {
-          setVoted(parseInt(storedVote, 10));
+        
+        // --- CORRECCIÓN IMPORTANTE ---
+        // La API devuelve un array, así que cogemos la primera encuesta (data[0])
+        // Si data ya fuera un objeto, lo usamos directamente.
+        const activePoll = Array.isArray(data) ? data[0] : data;
+        
+        setPoll(activePoll);
+
+        // Comprobamos si ya votó en esta encuesta específica
+        if (activePoll) {
+          const storedVote = localStorage.getItem(`poll_${activePoll.id}_voted`);
+          if (storedVote) {
+            setVoted(parseInt(storedVote, 10));
+          }
         }
       }
     } catch (error) {
@@ -56,8 +66,19 @@ export function QuickPoll() {
       });
 
       if (response.ok) {
-        const updatedPoll = await response.json();
-        setPoll(updatedPoll);
+        // Al votar, la API suele devolver el objeto actualizado.
+        // Nos aseguramos de leerlo correctamente.
+        const responseData = await response.json();
+        
+        // A veces la API de voto devuelve solo éxito, a veces la encuesta entera.
+        // Si devuelve éxito, recargamos todo para ver los porcentajes nuevos.
+        if (responseData.success) {
+             fetchPoll(); // Recargar datos frescos de la DB
+        } else {
+             // Si la API devolvió la encuesta actualizada directamente
+             setPoll(responseData);
+        }
+
         setVoted(optionId);
         localStorage.setItem(`poll_${poll.id}_voted`, optionId.toString());
         toast.success("¡Gracias por tu voto!");
@@ -65,12 +86,13 @@ export function QuickPoll() {
         const errorData = await response.json();
         toast.error(errorData.error || "No se pudo registrar el voto.");
         if (response.status === 403) {
-          // If the server says already voted, trust the server and update UI
+          // Si el servidor dice "ya votaste", actualizamos la UI
           setVoted(optionId);
           localStorage.setItem(`poll_${poll.id}_voted`, optionId.toString());
         }
       }
     } catch (error) {
+      console.error(error);
       toast.error("Ocurrió un error inesperado.");
     }
   };
@@ -91,10 +113,12 @@ export function QuickPoll() {
   }
 
   if (!poll) {
-    return null; // Don't render anything if there's no active poll
+    return null; 
   }
 
-  const totalVotes = poll.options.reduce((acc, option) => acc + option.votes, 0);
+  // Protección extra: si poll.options es undefined, usamos array vacío para que no explote el reduce
+  const options = poll.options || [];
+  const totalVotes = options.reduce((acc, option) => acc + (option.votes || 0), 0);
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -104,7 +128,7 @@ export function QuickPoll() {
       <CardContent>
         <div className="space-y-4">
           <AnimatePresence>
-            {poll.options.map((option) => {
+            {options.map((option) => {
               const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
               return (
                 <motion.div

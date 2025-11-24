@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import fs from 'fs/promises';
-import path from 'path';
+import { Pool } from '@neondatabase/serverless';
 
-const questionsFilePath = path.join(process.cwd(), 'data', 'questions.json');
-
+// Esquema de validación
 const questionSchema = z.object({
   question: z.string().min(10, 'La pregunta debe tener al menos 10 caracteres').max(500, 'La pregunta no puede tener más de 500 caracteres'),
   userName: z.string().optional(),
 });
 
+// POST: Guardar nueva pregunta
 export async function POST(req: NextRequest) {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
   try {
     const body = await req.json();
     const validation = questionSchema.safeParse(body);
@@ -20,41 +21,44 @@ export async function POST(req: NextRequest) {
     }
 
     const { question, userName } = validation.data;
+    const finalUserName = userName || 'Anónimo';
 
-    let questions = [];
-    try {
-      const fileContent = await fs.readFile(questionsFilePath, 'utf-8');
-      questions = JSON.parse(fileContent);
-    } catch (error) {
-      // If the file doesn't exist or is empty, we'll start with an empty array
-    }
-
-    const newQuestion = {
-      id: Date.now(),
-      question,
-      userName: userName || 'Anónimo',
-      createdAt: new Date().toISOString(),
-      answered: false,
-    };
-
-    questions.push(newQuestion);
-
-    await fs.writeFile(questionsFilePath, JSON.stringify(questions, null, 2));
+    // Guardar en Neon
+    await pool.query(
+      'INSERT INTO questions (question_text, user_name) VALUES ($1, $2)',
+      [question, finalUserName]
+    );
 
     return NextResponse.json({ message: 'Pregunta enviada con éxito' }, { status: 201 });
+
   } catch (error) {
-    console.error(error);
+    console.error('Error POST questions:', error);
     return NextResponse.json({ error: 'Error al enviar la pregunta' }, { status: 500 });
+  } finally {
+    await pool.end();
   }
 }
 
+// GET: Leer preguntas no respondidas
 export async function GET() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
   try {
-    const fileContent = await fs.readFile(questionsFilePath, 'utf-8');
-    const questions = JSON.parse(fileContent);
-    const unansweredQuestions = questions.filter(q => !q.answered);
-    return NextResponse.json(unansweredQuestions);
+    // Seleccionamos solo las NO respondidas, ordenadas por fecha (más recientes primero)
+    const result = await pool.query(`
+      SELECT id, question_text as question, user_name as "userName", created_at as "createdAt", is_answered as answered
+      FROM questions 
+      WHERE is_answered = FALSE 
+      ORDER BY created_at DESC
+    `);
+
+    return NextResponse.json(result.rows);
+
   } catch (error) {
+    console.error('Error GET questions:', error);
+    // Devolver array vacío en caso de error para no romper el frontend
     return NextResponse.json([]);
+  } finally {
+    await pool.end();
   }
 }
