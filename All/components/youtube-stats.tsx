@@ -16,7 +16,7 @@ export function YouTubeStats({ stats }: YouTubeStatsProps) {
   const formatWrapper = (value: number) => formatNumber(value.toString());
 
   return (
-    <div className="bg-background/80 backdrop-blur-sm border-2 border-primary rounded-lg p-8 inline-block">
+    <div className="bg-background/80 backdrop-blur-sm border-2 border-primary rounded-lg p-8 flex flex-col items-center w-64">
       <div className="text-5xl md:text-6xl font-bold text-accent mb-2">
         <Counter from={0} to={Number(subscriberCount)} format={formatWrapper} />
       </div>
