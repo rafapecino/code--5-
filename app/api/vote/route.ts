@@ -1,61 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { Pool } from '@neondatabase/serverless';
 
-// Esquema de validación
-const voteSchema = z.object({
-  pollId: z.number(),
-  optionId: z.number(),
-  // Opcional: Si quieres guardar el texto de la opción también
-  optionText: z.string().optional() 
-});
-
 export async function POST(req: NextRequest) {
-  // Conexión a Neon usando la variable de entorno DATABASE_URL
+  // 1. Conectar
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
   try {
     const body = await req.json();
-    const validation = voteSchema.safeParse(body);
+    // Logs para ver qué llega (míralo en Vercel Logs)
+    console.log("Recibido voto:", body);
 
-    if (!validation.success) {
-      return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
-    }
-
-    const { pollId, optionId } = validation.data;
-    
-    // Obtener IP del usuario para evitar votos dobles
+    const { pollId, optionId } = body;
     const ip = req.headers.get('x-forwarded-for') ?? 'unknown';
 
-    // 1. Comprobar si esta IP ya ha votado en esta encuesta
-    // (Asumiendo que guardamos poll_id e ip en la base de datos)
-    const checkVote = await pool.query(
-      'SELECT id FROM votes WHERE ip_address = $1 AND poll_id = $2',
-      [ip, pollId]
-    );
+    // 2. Guardar directamente (sin comprobaciones complejas por ahora)
+    // Asegúrate de que tu tabla en Neon tiene estas columnas: poll_id, option_id, ip_address
+    const query = 'INSERT INTO votes (poll_id, option_id, ip_address) VALUES ($1, $2, $3)';
+    const values = [pollId, optionId, ip];
 
-    if (checkVote.rows.length > 0) {
-       return NextResponse.json({ error: 'Ya has votado en esta encuesta' }, { status: 403 });
-    }
+    await pool.query(query, values);
 
-    // 2. Guardar el voto
-    // Necesitamos insertar en la tabla 'votes'. 
-    // Asegúrate de tener estas columnas en tu tabla Neon: poll_id, option_id, ip_address
-    await pool.query(
-      'INSERT INTO votes (poll_id, option_id, ip_address) VALUES ($1, $2, $3)',
-      [pollId, optionId, ip]
-    );
+    return NextResponse.json({ success: true });
 
-    // 3. (Opcional) Deberías devolver los resultados actualizados.
-    // Esto requiere hacer un SELECT COUNT... GROUP BY option_id
-    // Por ahora devolvemos éxito para que no de error.
-    return NextResponse.json({ success: true, message: "Voto registrado" });
-
-  } catch (error) {
-    console.error('Error en base de datos:', error);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+  } catch (error: any) {
+    // Este log es clave: te dirá en Vercel Logs qué falla exactamente
+    console.error('ERROR SQL:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   } finally {
-    // Cerrar conexión (importante en serverless)
     await pool.end();
   }
 }
