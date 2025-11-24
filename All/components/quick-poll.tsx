@@ -48,10 +48,17 @@ export function QuickPoll() {
       const response = await fetch("/api/polls");
       if (response.ok) {
         const data = await response.json();
-        setPoll(data);
-        const storedVote = localStorage.getItem(`poll_${data.id}_voted`);
-        if (storedVote) {
-          setVoted(parseInt(storedVote, 10));
+        
+        // --- CORRECCIÓN CLAVE: Extraer la primera encuesta si es un array ---
+        const activePoll = Array.isArray(data) ? data[0] : data;
+        
+        setPoll(activePoll);
+
+        if (activePoll) {
+           const storedVote = localStorage.getItem(`poll_${activePoll.id}_voted`);
+           if (storedVote) {
+             setVoted(parseInt(storedVote, 10));
+           }
         }
       }
     } catch (error) {
@@ -76,8 +83,11 @@ export function QuickPoll() {
       });
 
       if (response.ok) {
-        const updatedPoll = await response.json();
-        setPoll(updatedPoll);
+        const responseData = await response.json();
+        
+        // Recargar para obtener votos actualizados de la DB
+        fetchPoll();
+
         setVoted(optionId);
         localStorage.setItem(`poll_${poll.id}_voted`, optionId.toString());
         toast.success("¡Gracias por tu voto!");
@@ -113,7 +123,9 @@ export function QuickPoll() {
     return null;
   }
 
-  const totalVotes = poll.options.reduce((acc, option) => acc + option.votes, 0);
+  // Protección contra options undefined
+  const options = poll.options || [];
+  const totalVotes = options.reduce((acc, option) => acc + (option.votes || 0), 0);
 
   return (
     <Card className="w-full max-w-md mx-auto bg-card/50 backdrop-blur-sm border-border/20">
@@ -125,7 +137,7 @@ export function QuickPoll() {
       <CardContent>
         <div className="space-y-3">
           <AnimatePresence>
-            {poll.options.map((option, index) => {
+            {options.map((option, index) => {
               const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
               const isVotedOption = voted === option.id;
 
@@ -156,7 +168,8 @@ export function QuickPoll() {
                           )}
                         </div>
                         <div className="flex items-center gap-1 font-bold text-lg">
-                          <Counter from={0} to={percentage} format={(v) => `${v.toFixed(1)}`} />
+                           {/* Usamos toFixed directo si Counter da problemas, o Counter si lo tienes bien importado */}
+                          <span>{percentage.toFixed(1)}</span>
                           <span>%</span>
                         </div>
                       </div>
