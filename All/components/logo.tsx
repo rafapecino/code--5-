@@ -10,9 +10,9 @@ interface LogoProps {
 
 export function Logo({ size = "md", showText = true, className = "" }: LogoProps) {
   const sizeMap = {
-    sm: { image: 80 },
-    md: { image: 140 },
-    lg: { image: 200 },
+    sm: { image: 120 },
+    md: { image: 200 },
+    lg: { image: 280 },
   }
 
   const config = sizeMap[size]
@@ -36,12 +36,12 @@ export function Logo({ size = "md", showText = true, className = "" }: LogoProps
 
 export function LogoMinimal() {
   return (
-    <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center transition-transform duration-300 hover:scale-110">
+    <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center transition-transform duration-300 hover:scale-110">
       <Image
         src="/logo-pecinogp.png"
         alt="PecinoGP"
-        width={160}
-        height={160}
+        width={224}
+        height={224}
         className="object-contain drop-shadow-lg"
         priority
       />
