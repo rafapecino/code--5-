@@ -2,7 +2,7 @@
 
 const MOTOGP_API_KEY = "123" // Tu clave de API
 const MOTOGP_LEAGUE_ID = "4400" // ID para MotoGP
-const CURRENT_SEASON = "2025" // Temporada actual
+const CURRENT_SEASON = "2026" // Temporada actual
 
 export interface DriverStanding {
   pos: string

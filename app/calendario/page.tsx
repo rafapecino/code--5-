@@ -9,7 +9,7 @@ export default function CalendarioPage() {
         {/* Page Header */}
         <section className="px-4 sm:px-6 lg:px-8 py-12 border-b border-border">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Calendario 2025</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Calendario 2026</h1>
             <p className="text-lg text-muted-foreground">El calendario completo de la temporada de MotoGP, Moto2 y Moto3.</p>
           </div>
         </section>

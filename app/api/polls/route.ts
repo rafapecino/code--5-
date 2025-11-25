@@ -5,7 +5,7 @@ import { Pool } from '@neondatabase/serverless';
 const POLLS_DATA = [
   {
     id: 1,
-    question: "¿Quién ganará el campeonato 2025?",
+    question: "¿Quién ganará el campeonato 2026?",
     options: [
       { id: 1, text: "Marc Márquez", votes: 0 },
       { id: 2, text: "Pecco Bagnaia", votes: 0 },
