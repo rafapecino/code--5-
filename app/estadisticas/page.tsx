@@ -1,5 +1,5 @@
 import Header from "@/All/components/header"
-import { getChannelStats } from "@/lib/youtube-service"
+import { getChannelStats } from "@/lib/youtube-data"
 
 function formatNumber(num: number): string {
   if (num >= 1000000) {
@@ -50,7 +50,7 @@ export default async function EstadisticasPage() {
               <div className="card-racing">
                 <div className="text-5xl font-bold text-white mb-4">{videoCount}</div>
                 <h3 className="text-2xl font-bold mb-2">Vídeos Publicados</h3>
-                <p className="text-muted-foreground">Contenido exhaustivo de análisis y cobertura de carreras</p>
+.                <p className="text-muted-foreground">Contenido exhaustivo de análisis y cobertura de carreras</p>
               </div>
             </div>
           </div>
