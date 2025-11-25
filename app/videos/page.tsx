@@ -1,5 +1,5 @@
 import Header from "@/All/components/header"
-import { getLatestVideos } from "@/lib/youtube-service"
+import { getLatestVideos } from "@/lib/youtube-data"
 import { YouTubeVideos } from "@/All/components/youtube-videos"
 
 export default async function VideosPage() {

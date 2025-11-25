@@ -1,7 +1,7 @@
 import Header from "@/All/components/header"
 import Image from "next/image"
 import Link from "next/link"
-import { getChannelStats, getLatestVideos } from "@/lib/youtube-service"
+import { getChannelStats, getLatestVideos } from "@/lib/youtube-data"
 import { YouTubeStats } from "@/All/components/youtube-stats"
 import { YouTubeVideos } from "@/All/components/youtube-videos"
 import { Logo } from "@/All/components/logo"
