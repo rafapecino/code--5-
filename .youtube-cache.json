@@ -1,9 +1,9 @@
 {
-  "timestamp": 1764090552002,
+  "timestamp": 1764172578970,
   "data": {
     "channelStats": {
       "kind": "youtube#channelListResponse",
-      "etag": "sXPf66cQIEvx6J620Z6AubtUt9c",
+      "etag": "0-BlyCG5cMKDqTzKn4wT7XnvHqM",
       "pageInfo": {
         "totalResults": 1,
         "resultsPerPage": 5
@@ -11,59 +11,93 @@
       "items": [
         {
           "kind": "youtube#channel",
-          "etag": "PPR5vNb0Ju0_e_MozJ8TIEmxUJ0",
+          "etag": "Qeq3aMCDnaUwl3q7Ez8u8-6FeRk",
           "id": "UCSvr3yH2NkqlAHfuRDphz4g",
           "statistics": {
-            "viewCount": "14548231",
-            "subscriberCount": "56100",
+            "viewCount": "14570043",
+            "subscriberCount": "56200",
             "hiddenSubscriberCount": false,
-            "videoCount": "978"
+            "videoCount": "979"
           }
         }
       ]
     },
     "latestVideos": {
       "kind": "youtube#searchListResponse",
-      "etag": "o0Qr0Ey1S0CE6NNZN4eE_6dJqJ4",
+      "etag": "WNcLd2W884EHjO5iXC81ayulvro",
       "nextPageToken": "CAMQAA",
       "regionCode": "ES",
       "pageInfo": {
-        "totalResults": 413,
+        "totalResults": 414,
         "resultsPerPage": 3
       },
       "items": [
         {
           "kind": "youtube#searchResult",
-          "etag": "018GJMlEIMx2_qz28kRNL2YFe6E",
+          "etag": "kc6OA6M9qs3rbMp6QZdnuBuojSE",
           "id": {
             "kind": "youtube#video",
-            "videoId": "2q5MLON4FH4"
+            "videoId": "aq6TzUp4hDA"
           },
           "snippet": {
-            "publishedAt": "2025-11-25T16:42:01Z",
+            "publishedAt": "2025-11-26T10:20:50Z",
             "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
-            "title": "LAS NOTAS DE 2025",
-            "description": "Es momento de hacer balance de toda la temporada. Desde los aprobados \"Cum laude\", hasta los más que merecidos ...",
+            "title": "LAS NOTAS DE 2025...",
+            "description": "Sobresaliente, bien, aprobado, suspendido... Hoy toca valorar la temporada de los 22 pilotos de MotoGP y comparar con el ...",
             "thumbnails": {
               "default": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/default_live.jpg",
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/default_live.jpg",
                 "width": 120,
                 "height": 90
               },
               "medium": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/mqdefault_live.jpg",
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/mqdefault_live.jpg",
                 "width": 320,
                 "height": 180
               },
               "high": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/hqdefault_live.jpg",
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/hqdefault_live.jpg",
                 "width": 480,
                 "height": 360
               }
             },
             "channelTitle": "PecinoGP ",
             "liveBroadcastContent": "upcoming",
-            "publishTime": "2025-11-25T16:42:01Z"
+            "publishTime": "2025-11-26T10:20:50Z"
+          }
+        },
+        {
+          "kind": "youtube#searchResult",
+          "etag": "XPNyzm4xVf_6ZU7HEuYI6Y87B90",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "2q5MLON4FH4"
+          },
+          "snippet": {
+            "publishedAt": "2025-11-25T20:33:51Z",
+            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
+            "title": "SÚPER NOTICIARIO / ANÁLISIS DE LAS ÚLTIMAS NOTICIAS DE MOTOGP &amp; WSBK",
+            "description": "Veremos GGPP en circuitos urbanos?... La alianza Maverick Viñales/Jorge Lorenzo... ¿Michele Pirro futuro sustituto de Davide ...",
+            "thumbnails": {
+              "default": {
+                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/default.jpg",
+                "width": 120,
+                "height": 90
+              },
+              "medium": {
+                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/mqdefault.jpg",
+                "width": 320,
+                "height": 180
+              },
+              "high": {
+                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/hqdefault.jpg",
+                "width": 480,
+                "height": 360
+              }
+            },
+            "channelTitle": "PecinoGP ",
+            "liveBroadcastContent": "none",
+            "publishTime": "2025-11-25T20:33:51Z"
           }
         },
         {
@@ -98,40 +132,6 @@
             "channelTitle": "PecinoGP ",
             "liveBroadcastContent": "none",
             "publishTime": "2025-11-24T20:00:06Z"
-          }
-        },
-        {
-          "kind": "youtube#searchResult",
-          "etag": "yhLmu5cE5F34WHcOQX0ELGXcIOM",
-          "id": {
-            "kind": "youtube#video",
-            "videoId": "JUKXqPe1cT0"
-          },
-          "snippet": {
-            "publishedAt": "2025-11-21T19:00:06Z",
-            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
-            "title": "&quot;DIOGO LO HARÁ MUY BIEN EN MOTOGP&quot;, ALEX BARROS",
-            "description": "Hace casi 20 años que Alexandre Barros colgó el mono después de más de dos décadas en los GGPP. El título mundial de ...",
-            "thumbnails": {
-              "default": {
-                "url": "https://i.ytimg.com/vi/JUKXqPe1cT0/default.jpg",
-                "width": 120,
-                "height": 90
-              },
-              "medium": {
-                "url": "https://i.ytimg.com/vi/JUKXqPe1cT0/mqdefault.jpg",
-                "width": 320,
-                "height": 180
-              },
-              "high": {
-                "url": "https://i.ytimg.com/vi/JUKXqPe1cT0/hqdefault.jpg",
-                "width": 480,
-                "height": 360
-              }
-            },
-            "channelTitle": "PecinoGP ",
-            "liveBroadcastContent": "none",
-            "publishTime": "2025-11-21T19:00:06Z"
           }
         }
       ]
