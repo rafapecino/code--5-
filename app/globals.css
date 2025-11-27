@@ -48,10 +48,18 @@ h1, h2, h3 {
 }
 
 .card-racing {
-  background-color: rgb(var(--card));
-  border: 1px solid rgb(var(--border));
+  background-color: bg-slate-800/50;
+  backdrop-filter: blur(12px);
+  border: 1px solid border-slate-800;
   border-radius: 0.5rem;
   padding: 1.5rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-racing:hover {
+  border-color: border-slate-600;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .btn-racing {
@@ -122,6 +130,32 @@ h1, h2, h3 {
   }
 }
 
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown 0.5s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
 }

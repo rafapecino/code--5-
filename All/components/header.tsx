@@ -16,6 +16,20 @@ const NAV_LINKS = [
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [liveInfo, setLiveInfo] = useState<LiveStream>({isLive: false});
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 0
+      setScrolled(isScrolled)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchLiveStatus() {
@@ -29,8 +43,9 @@ export default function Header() {
 
   return (
     <header
-      style={{ backgroundColor: 'rgb(26, 26, 26)' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-border shadow-lg`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-border shadow-lg ${
+        scrolled ? "bg-slate-800/50 backdrop-blur-sm" : ""
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
