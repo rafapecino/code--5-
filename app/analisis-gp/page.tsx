@@ -2,6 +2,8 @@ import Header from "@/All/components/header"
 import { getLatestVideos } from "@/lib/youtube-data"
 import { YouTubeVideos } from "@/All/components/youtube-videos"
 
+export const revalidate = 3600
+
 export default async function AnalisisGpPage() {
   const videos = await getLatestVideos(12)
 

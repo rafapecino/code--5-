@@ -9,6 +9,8 @@ import { Logo } from "@/All/components/logo"
 import { Youtube } from "lucide-react"
 import { LatestVideo } from "@/All/components/latest-video"
 
+export const revalidate = 3600;
+
 export default async function Home() {
   const channelStats = await getChannelStats()
   const videos = await getLatestVideos(3)
