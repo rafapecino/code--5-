@@ -23,32 +23,15 @@ export default async function Home() {
 
       <main className="pt-16 md:pt-20 lg:pt-20">
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-          {/* 1. Video de Fondo (o imagen estática como fallback) */}
-          {/* Descomenta el video si tienes un clip corto y optimizado en /public/videos/hero-loop.mp4 */}
-          {/* <video
-            playsInline
-            autoPlay
-            muted
-            loop
-            className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
-          >
-            <source src="/videos/hero-loop.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video> */}
-          
-          {/* Fallback con imagen y mejor posicionamiento */}
           <Image
             src="/motogp-race-moment---index-.jpg"
-            alt="Piloto de MotoGP en plena carrera"
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center 40%" // Ajusta el encuadre para no cortar la acción
-            className="absolute z-0"
+            alt="Fondo de carrera de MotoGP"
+            fill
+            className="absolute z-0 object-cover"
             priority
           />
-
-          {/* 2. Gradiente de Contraste Mejorado */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/70 to-transparent z-10"></div>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/60 z-10"></div>
 
           {/* 3. Contenido del Hero con Tipografía y Estructura Optimizada */}
           <div className="relative z-20 max-w-4xl mx-auto px-4 text-center flex flex-col items-center justify-center animate-fade-in-up">

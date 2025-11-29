@@ -1,9 +1,9 @@
 {
-  "timestamp": 1764417861953,
+  "timestamp": 1764420185648,
   "data": {
     "channelStats": {
       "kind": "youtube#channelListResponse",
-      "etag": "_hmQP_0Obogzo0g615uqfK2HPDY",
+      "etag": "VDm90cPY4gzUbln1OYF-wDQh9Oc",
       "pageInfo": {
         "totalResults": 1,
         "resultsPerPage": 5
@@ -11,30 +11,98 @@
       "items": [
         {
           "kind": "youtube#channel",
-          "etag": "Ij_3xyV7-SPA13Tc621jJ-9Pnq0",
+          "etag": "L-eYmTogVDOyUNJsTu8_96cyN0o",
           "id": "UCSvr3yH2NkqlAHfuRDphz4g",
           "statistics": {
-            "viewCount": "14573459",
-            "subscriberCount": "56300",
+            "viewCount": "14608335",
+            "subscriberCount": "56400",
             "hiddenSubscriberCount": false,
-            "videoCount": "980"
+            "videoCount": "982"
           }
         }
       ]
     },
     "latestVideos": {
       "kind": "youtube#searchListResponse",
-      "etag": "FujEeUm2NvX4RXk260FKw_93I6c",
+      "etag": "UW07ajJd3lJwV4wVE5Y_ZOdAb8E",
       "nextPageToken": "CAMQAA",
       "regionCode": "ES",
       "pageInfo": {
-        "totalResults": 415,
+        "totalResults": 414,
         "resultsPerPage": 3
       },
       "items": [
         {
           "kind": "youtube#searchResult",
-          "etag": "kRFH4az_QdHwTI_jfDmgHvAaY4E",
+          "etag": "LdasPLogpvtV02jx32O0m5F81hU",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "4t0U9BmOXHA"
+          },
+          "snippet": {
+            "publishedAt": "2025-11-28T20:30:21Z",
+            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
+            "title": "&quot;¿BAUTISTA HA DEJADO DE GANAR POR EL PESO?&quot;... GREGORIO LAVILLA, DIRECTOR EJECUTIVO DE WSBK",
+            "description": "Interesante conversación con 'el jefe' del Mundial de Superbikes, Gregorio Lavilla, con el que repasamos la recién terminada ...",
+            "thumbnails": {
+              "default": {
+                "url": "https://i.ytimg.com/vi/4t0U9BmOXHA/default.jpg",
+                "width": 120,
+                "height": 90
+              },
+              "medium": {
+                "url": "https://i.ytimg.com/vi/4t0U9BmOXHA/mqdefault.jpg",
+                "width": 320,
+                "height": 180
+              },
+              "high": {
+                "url": "https://i.ytimg.com/vi/4t0U9BmOXHA/hqdefault.jpg",
+                "width": 480,
+                "height": 360
+              }
+            },
+            "channelTitle": "PecinoGP ",
+            "liveBroadcastContent": "none",
+            "publishTime": "2025-11-28T20:30:21Z"
+          }
+        },
+        {
+          "kind": "youtube#searchResult",
+          "etag": "0-sr9qkZKlDkRFr9jgkDm59Y9Hc",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "aq6TzUp4hDA"
+          },
+          "snippet": {
+            "publishedAt": "2025-11-27T21:10:43Z",
+            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
+            "title": "LAS NOTAS DE 2025...",
+            "description": "Sobresaliente, bien, aprobado, suspendido... Hoy toca valorar la temporada de los 22 pilotos de MotoGP y comparar con el ...",
+            "thumbnails": {
+              "default": {
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/default.jpg",
+                "width": 120,
+                "height": 90
+              },
+              "medium": {
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/mqdefault.jpg",
+                "width": 320,
+                "height": 180
+              },
+              "high": {
+                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/hqdefault.jpg",
+                "width": 480,
+                "height": 360
+              }
+            },
+            "channelTitle": "PecinoGP ",
+            "liveBroadcastContent": "none",
+            "publishTime": "2025-11-27T21:10:43Z"
+          }
+        },
+        {
+          "kind": "youtube#searchResult",
+          "etag": "zgpzieZ5dtiIahkmBmvMaNcrfWM",
           "id": {
             "kind": "youtube#video",
             "videoId": "RLzKzbZL_fc"
@@ -64,74 +132,6 @@
             "channelTitle": "PecinoGP ",
             "liveBroadcastContent": "none",
             "publishTime": "2025-11-26T20:14:32Z"
-          }
-        },
-        {
-          "kind": "youtube#searchResult",
-          "etag": "fSy6uE6tCuEOfJLgzIzzJJw2KpY",
-          "id": {
-            "kind": "youtube#video",
-            "videoId": "aq6TzUp4hDA"
-          },
-          "snippet": {
-            "publishedAt": "2025-11-26T10:20:50Z",
-            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
-            "title": "LAS NOTAS DE 2025...",
-            "description": "Sobresaliente, bien, aprobado, suspendido... Hoy toca valorar la temporada de los 22 pilotos de MotoGP y comparar con el ...",
-            "thumbnails": {
-              "default": {
-                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/default_live.jpg",
-                "width": 120,
-                "height": 90
-              },
-              "medium": {
-                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/mqdefault_live.jpg",
-                "width": 320,
-                "height": 180
-              },
-              "high": {
-                "url": "https://i.ytimg.com/vi/aq6TzUp4hDA/hqdefault_live.jpg",
-                "width": 480,
-                "height": 360
-              }
-            },
-            "channelTitle": "PecinoGP ",
-            "liveBroadcastContent": "upcoming",
-            "publishTime": "2025-11-26T10:20:50Z"
-          }
-        },
-        {
-          "kind": "youtube#searchResult",
-          "etag": "XPNyzm4xVf_6ZU7HEuYI6Y87B90",
-          "id": {
-            "kind": "youtube#video",
-            "videoId": "2q5MLON4FH4"
-          },
-          "snippet": {
-            "publishedAt": "2025-11-25T20:33:51Z",
-            "channelId": "UCSvr3yH2NkqlAHfuRDphz4g",
-            "title": "SÚPER NOTICIARIO / ANÁLISIS DE LAS ÚLTIMAS NOTICIAS DE MOTOGP &amp; WSBK",
-            "description": "Veremos GGPP en circuitos urbanos?... La alianza Maverick Viñales/Jorge Lorenzo... ¿Michele Pirro futuro sustituto de Davide ...",
-            "thumbnails": {
-              "default": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/default.jpg",
-                "width": 120,
-                "height": 90
-              },
-              "medium": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/mqdefault.jpg",
-                "width": 320,
-                "height": 180
-              },
-              "high": {
-                "url": "https://i.ytimg.com/vi/2q5MLON4FH4/hqdefault.jpg",
-                "width": 480,
-                "height": 360
-              }
-            },
-            "channelTitle": "PecinoGP ",
-            "liveBroadcastContent": "none",
-            "publishTime": "2025-11-25T20:33:51Z"
           }
         }
       ]
