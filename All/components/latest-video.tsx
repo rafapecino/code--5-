@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { YouTubeVideo, getVideoEmbedUrl } from "@/lib/youtube-service";
+import { decodeHtmlEntities } from "@/lib/utils";
 
 // This is now a Server Component, receiving data via props
 export function LatestVideo({ latestVideo }: { latestVideo: YouTubeVideo | null }) {
@@ -47,7 +48,7 @@ export function LatestVideo({ latestVideo }: { latestVideo: YouTubeVideo | null 
         <div className="w-full overflow-hidden rounded-lg aspect-video">
           <iframe
             src={getVideoEmbedUrl(latestVideo.id)}
-            title={latestVideo.title}
+            title={decodeHtmlEntities(latestVideo.title)}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -55,7 +56,7 @@ export function LatestVideo({ latestVideo }: { latestVideo: YouTubeVideo | null 
           ></iframe>
         </div>
         <h3 className="mt-4 font-bold text-center text-lg text-foreground line-clamp-2">
-          {latestVideo.title}
+          {decodeHtmlEntities(latestVideo.title)}
         </h3>
       </CardContent>
     </Card>
