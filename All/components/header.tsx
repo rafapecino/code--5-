@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Logo } from "./logo"
@@ -83,19 +84,13 @@ export default function Header() {
                 href="https://www.youtube.com/channel/UCSvr3yH2NkqlAHfuRDphz4g"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 sm:px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105"
               >
-                <svg
-                  className="w-6 h-auto"
-                  viewBox="0 0 28 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M27.3733 3.033C27.0433 1.841 26.0913 0.889 24.9 0.559C22.7163 0 14.0003 0 14.0003 0C14.0003 0 5.28433 0 3.10033 0.559C1.90833 0.889 0.957333 1.841 0.627333 3.033C0.0683334 5.217 0 9.8 0 9.8S0.0683334 14.383 0.627333 16.567C0.957333 17.759 1.90833 18.711 3.10033 19.041C5.28433 19.6 14.0003 19.6 14.0003 19.6C14.0003 19.6 22.7163 19.6 24.9003 19.041C26.0923 18.711 27.0433 17.759 27.3733 16.567C27.9323 14.383 28.0003 9.8 28.0003 9.8S27.9323 5.217 27.3733 3.033ZM11.2003 14V5.6L18.4803 9.8L11.2003 14Z"
-                  fill="white"
-                  />
-                </svg>
-                <span className="hidden sm:inline">YouTube</span>
+                <Image
+                  src="/YouTube_Logo/Digital/01 Full Color/yt_logo_fullcolor_white_digital.png"
+                  alt="YouTube Logo"
+                  width={96}
+                  height={24}
+                />
               </a>
             )}
 
@@ -141,19 +136,13 @@ export default function Header() {
                   href="https://www.youtube.com/channel/UCSvr3yH2NkqlAHfuRDphz4g"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition-all w-full"
                 >
-                  <svg
-                    className="w-6 h-auto"
-                    viewBox="0 0 28 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M27.3733 3.033C27.0433 1.841 26.0913 0.889 24.9 0.559C22.7163 0 14.0003 0 14.0003 0C14.0003 0 5.28433 0 3.10033 0.559C1.90833 0.889 0.957333 1.841 0.627333 3.033C0.0683334 5.217 0 9.8 0 9.8S0.0683334 14.383 0.627333 16.567C0.957333 17.759 1.90833 18.711 3.10033 19.041C5.28433 19.6 14.0003 19.6 14.0003 19.6C14.0003 19.6 22.7163 19.6 24.9003 19.041C26.0923 18.711 27.0433 17.759 27.3733 16.567C27.9323 14.383 28.0003 9.8 28.0003 9.8S27.9323 5.217 27.3733 3.033ZM11.2003 14V5.6L18.4803 9.8L11.2003 14Z"
-                    fill="white"
-                    />
-                  </svg>
-                  <span>YouTube</span>
+                  <Image
+                    src="/YouTube_Logo/Digital/01 Full Color/yt_logo_fullcolor_white_digital.png"
+                    alt="YouTube Logo"
+                    width={96}
+                    height={24}
+                  />
                 </a>
               )}
             </div>
