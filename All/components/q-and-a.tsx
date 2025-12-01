@@ -17,6 +17,7 @@ import { Input } from "@/All/components/ui/input";
 import { Textarea } from "@/All/components/ui/textarea";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { HelpCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -187,9 +188,12 @@ export function QAndA() {
                 </AnimatePresence>
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-8">
-                Aún no hay preguntas. ¡Sé el primero en preguntar!
-              </p>
+              <div className="text-center py-12">
+                <HelpCircle className="mx-auto h-16 w-16 text-gray-700" />
+                <p className="mt-4 text-muted-foreground">
+                  ¡Sé el primero en abrir debate! Tu pregunta podría salir en el próximo vídeo de Manuel Pecino.
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
