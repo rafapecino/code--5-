@@ -44,7 +44,7 @@ export async function getLiveStream(): Promise<LiveStream> {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${apiKey}`;
 
     try {
-      const response = await fetch(url, { next: { revalidate: 60 } }); // Revalidate every minute
+      const response = await fetch(url, { next: { revalidate: 60 } });
 
       if (response.ok) {
         const data = await response.json();
@@ -59,16 +59,25 @@ export async function getLiveStream(): Promise<LiveStream> {
         return { isLive: false };
       }
 
+      // If response is not OK, log the error details
+      let errorMessage = response.statusText;
+      try {
+        const errorData = await response.json();
+        if (errorData.error && errorData.error.errors && errorData.error.errors.length > 0) {
+          errorMessage = errorData.error.errors[0].reason;
+        }
+      } catch (e) {
+        // Ignore if parsing fails, use statusText
+      }
+      
+      console.warn(
+        `Error con API Key ${i + 1}: ${response.status} - ${errorMessage}`
+      );
+
       if (response.status === 403) {
-        console.warn(`API key #${i + 1} failed for live status. Trying next key.`);
         continue; // Try the next key
       }
 
-      console.error(
-        `Error fetching live stream status with key #${i + 1}:`,
-        response.status,
-        response.statusText
-      );
     } catch (error) {
       console.error(`Network error fetching live stream status with key #${i + 1}:`, error);
     }

@@ -51,22 +51,26 @@ async function getData(
         return await response.json();
       }
 
-      if (response.status === 403) {
-        console.warn(`API key #${i + 1} failed for ${cacheKey}. Trying next key.`);
-        continue; // Try the next key
+      let errorMessage = response.statusText;
+      try {
+        const errorData = await response.json();
+        if (errorData.error && errorData.error.errors && errorData.error.errors.length > 0) {
+          errorMessage = errorData.error.errors[0].reason;
+        }
+      } catch (e) {
+        // Ignore if parsing fails, use statusText
       }
 
-      const errorBody = await response.text();
-      console.error(
-        `Error fetching ${cacheKey} with key #${i + 1}:`,
-        response.status,
-        response.statusText,
-        errorBody
+      console.warn(
+        `Error con API Key ${i + 1} para ${cacheKey}: ${response.status} - ${errorMessage}`
       );
-      // For non-403 errors, we might not want to retry, but for simplicity, we'll continue
+
+      if (response.status === 403) {
+        continue; // Try the next key
+      }
+      
     } catch (error) {
       console.error(`Network error fetching ${cacheKey} with key #${i + 1}:`, error);
-      // On network error, also try the next key
     }
   }
 
