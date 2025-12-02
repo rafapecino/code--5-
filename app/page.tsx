@@ -8,6 +8,7 @@ import { YouTubeVideos } from "@/All/components/youtube-videos"
 import { Logo } from "@/All/components/logo"
 import { Youtube } from "lucide-react"
 import { LatestVideo } from "@/All/components/latest-video"
+import { TestMotion } from "@/All/components/ui/test-motion";
 
 export const revalidate = 3600;
 
@@ -35,12 +36,14 @@ export default async function Home() {
 
           {/* 3. Contenido del Hero con Tipografía y Estructura Optimizada */}
           <div className="relative z-20 max-w-4xl mx-auto px-4 text-center flex flex-col items-center justify-center animate-fade-in-up">
-            <h1 
-              className="text-4xl md:text-6xl font-bold text-white mb-4"
-            >
-              Análisis y Pasión por MotoGP
-            </h1>
-            <p 
+            <TestMotion>
+              <h1
+                className="text-4xl md:text-6xl font-bold text-white mb-4"
+              >
+                Análisis y Pasión por MotoGP
+              </h1>
+            </TestMotion>
+            <p
               className="text-lg md:text-xl text-[#F5F5F5]/90 max-w-2xl mx-auto mb-10"
             >
               Análisis técnicos profundos, directos comentados y cobertura exclusiva del campeonato mundial.

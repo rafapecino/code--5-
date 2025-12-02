@@ -2,9 +2,14 @@ import { cache } from 'react'
 import { YouTubeChannel, YouTubeVideo } from "./youtube-service";
 
 const KEYS = [
-  process.env.NEXT_PUBLIC_YOUTUBE_API_KEY,
-  process.env.NEXT_PUBLIC_YOUTUBE_API_KEY_2
+  process.env['NEXT_PUBLIC_YOUTUBE_API_KEY'],
+  process.env['NEXT_PUBLIC_YOUTUBE_API_KEY_2']
 ].filter((k): k is string => !!k && k.length > 10);
+
+console.log(`[CONFIG] Número de API Keys detectadas: ${KEYS.length}`);
+if (KEYS.length > 1) {
+  console.log(`[CONFIG] Key 2 empieza por: ${KEYS[1]?.substring(0, 5)}...`);
+}
 
 const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
 
@@ -108,30 +113,44 @@ export const getChannelStats = cache(async (): Promise<YouTubeChannel> => {
   return stats;
 });
 
-export const getLatestVideos = cache(async (
-  maxResults: number = 6
-): Promise<YouTubeVideo[]> => {
-  const url = `https://www.googleapis.com/youtube/v3/search?channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=${maxResults}&type=video`;
-  const data = await getData(url, "latestVideos", { items: [] });
-
-  if (!data.items || data.items.length === 0) {
-    console.warn("No videos found in response, serving fallback.");
-    return FALLBACK_VIDEOS.slice(0, maxResults);
+const getUploadsPlaylistId = (channelId: string) => {
+  if (!channelId.startsWith("UC")) {
+    console.warn(
+      "Channel ID does not start with 'UC'. Playlist ID conversion might be incorrect."
+    );
+    // Return a default or transformed ID for safety, though it might not work.
+    return `UU${channelId.substring(2)}`;
   }
+  return channelId.replace("UC", "UU");
+};
 
-  const videos = data.items.map((item: any) => ({
-    id: item.id.videoId,
-    title: item.snippet.title,
-    description: item.snippet.description,
-    thumbnail:
-      item.snippet.thumbnails.high?.url ||
-      item.snippet.thumbnails.default?.url ||
-      "",
-    publishedAt: item.snippet.publishedAt,
-    viewCount: "0",
-    channelTitle: item.snippet.channelTitle,
-  }));
+export const getLatestVideos = cache(
+  async (maxResults: number = 6): Promise<YouTubeVideo[]> => {
+    // Convert Channel ID to Uploads Playlist ID
+    const playlistId = getUploadsPlaylistId(CHANNEL_ID!);
+    const url = `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&part=snippet&maxResults=${maxResults}`;
 
-  console.log(`Successfully fetched ${videos.length} videos`);
-  return videos;
-});
+    const data = await getData(url, "latestVideos", { items: [] });
+
+    if (!data.items || data.items.length === 0) {
+      console.warn("No videos found in response, serving fallback.");
+      return FALLBACK_VIDEOS.slice(0, maxResults);
+    }
+
+    const videos = data.items.map((item: any) => ({
+      id: item.snippet.resourceId.videoId, // Corrected for playlistItems
+      title: item.snippet.title,
+      description: item.snippet.description,
+      thumbnail:
+        item.snippet.thumbnails.high?.url ||
+        item.snippet.thumbnails.default?.url ||
+        "",
+      publishedAt: item.snippet.publishedAt,
+      viewCount: "0", // playlistItems does not return view count directly
+      channelTitle: item.snippet.channelTitle,
+    }));
+
+    console.log(`Successfully fetched ${videos.length} videos`);
+    return videos;
+  }
+);
