@@ -26,9 +26,16 @@ export function YouTubeVideos({ videos }: YouTubeVideosProps) {
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-              <div className="text-white text-5xl opacity-80 group-hover:opacity-100 transition-opacity">
-                ▶️
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-90 group-hover:opacity-100">
+              <div className="bg-red-600 hover:bg-red-700 rounded-full w-16 h-16 flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 shadow-lg">
+                <svg
+                  className="w-8 h-8 text-white ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M6.3 4.29A1.25 1.25 0 0 0 4 5.37v9.26a1.25 1.25 0 0 0 1.9 1.08l7.67-4.63a1.25 1.25 0 0 0 0-2.16L6.3 4.29Z" />
+                </svg>
               </div>
             </div>
           </div>
