@@ -109,7 +109,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden pb-4 border-t border-border bg-background">
+          <nav className="md:hidden pb-4 border-t border-border bg-slate-900">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
