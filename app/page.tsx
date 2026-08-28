@@ -15,7 +15,6 @@ import { LatestVideo } from "@/All/components/latest-video";
 import { Magnetic } from "@/All/components/magnetic";
 import { ScatterText } from "@/All/components/motion/scatter-text";
 import { MaskReveal } from "@/All/components/motion/mask-reveal";
-import { Marquee } from "@/All/components/motion/marquee";
 import { LiquidButton } from "@/All/components/motion/liquid-button";
 import { motion } from "framer-motion";
 import { Play, ChevronRight, Youtube, Star, ArrowUpRight } from "lucide-react";
@@ -428,31 +427,6 @@ export default function Home() {
             aria-hidden
             className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
           />
-        </section>
-
-        {/* --- CINTA DE VELOCIDAD --- */}
-        {/* Separa el hero del contenido y reacciona al scroll: acelera e
-            invierte el sentido según hacia dónde te muevas. */}
-        <section
-          aria-hidden
-          className="relative border-y border-white/5 bg-red-600/[0.04] py-5 md:py-7"
-        >
-          <Marquee speed={26}>
-            {[
-              "PASIÓN AL LÍMITE",
-              "ANÁLISIS SIN FILTROS",
-              "MOTOGP EN ESPAÑOL",
-              "DESDE EL PADDOCK",
-            ].map((word) => (
-              <span
-                key={word}
-                className="flex items-center gap-8 px-8 text-2xl font-black uppercase italic tracking-tighter text-white/70 md:text-4xl"
-              >
-                {word}
-                <span className="h-2 w-2 shrink-0 rounded-full bg-red-600 shadow-[0_0_18px_rgba(220,38,38,0.9)]" />
-              </span>
-            ))}
-          </Marquee>
         </section>
 
         {/* --- LATEST VIDEO --- */}

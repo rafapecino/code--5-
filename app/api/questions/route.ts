@@ -13,7 +13,7 @@ const questionSchema = z.object({
 });
 
 /** Días que se conserva una pregunta antes de borrarse sola. */
-const TTL_DIAS = Number(process.env.QUESTIONS_TTL_DAYS ?? 30);
+const TTL_DIAS = Number(process.env.QUESTIONS_TTL_DAYS ?? 15);
 
 /**
  * Preguntas más recientes que nunca se borran por antigüedad. Evita que el

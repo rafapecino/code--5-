@@ -363,9 +363,3 @@ h3 {
   }
 }
 
-/* --- Marquee ------------------------------------------------------------- */
-/* Sin JS (o con movimiento reducido) la cinta se queda quieta y legible;
-   el desplazamiento lo aporta GSAP desde el componente. */
-.marquee__track {
-  backface-visibility: hidden;
-}
