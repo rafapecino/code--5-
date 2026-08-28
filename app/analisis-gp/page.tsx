@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/All/components/header";
-import type { YouTubeVideo } from "@/lib/youtube-data";
+import type { YouTubeVideo } from "@/lib/youtube-format";
 import { YouTubeVideos } from "@/All/components/youtube-videos";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, ChevronRight, Play } from "lucide-react";

@@ -31,7 +31,10 @@ Route-specific components live in `app/[route]/components/`.
 
 - **`lib/races.ts`** — Hardcoded race calendar for the current season. Update `races[]` entries and `endDate` (ISO `YYYY-MM-DD`) each season. `getRacesWithStatus()` auto-derives `completed / next / upcoming` from today's date — no other logic needed.
 - **`lib/motogp-service.ts`** — Proxy for `motogp.pulselive.com` standings API. Season/category UUIDs are hardcoded for the current season; update them when the season changes.
-- **`lib/youtube-service.ts`** / **`lib/youtube-data.ts`** — YouTube Data API v3 wrapper with dual-key rotation (`NEXT_PUBLIC_YOUTUBE_API_KEY` → `NEXT_PUBLIC_YOUTUBE_API_KEY_2`) for quota management, plus fallback cached data.
+- **`lib/youtube-service.ts`** / **`lib/youtube-data.ts`** — YouTube Data API v3 wrapper with dual-key rotation for quota management, plus fallback cached data. Both are **`server-only`**: they read API keys, and importing them from a client component inlines the key into the browser bundle (this actually happened — see `lib/youtube-format.ts`). Prefer `YOUTUBE_API_KEY*` over the `NEXT_PUBLIC_*` fallbacks.
+- **`lib/youtube-format.ts`** — client-safe types and pure helpers (`getVideoUrl`, `formatDate`, `formatNumber`). **Any `"use client"` component must import from here, never from `youtube-service`.**
+- **`lib/rate-limit.ts`** — in-memory per-IP rate limiter (`server-only`). Used by `/api/vote` (20/h), `/api/questions` POST (3 per 10 min) and the admin endpoints (10 failed token attempts per 15 min).
+- **`lib/polls-data.ts`** — single source of truth for active polls; `/api/vote` validates against it so no one can submit invented `pollId`/`optionId`.
 
 ### API routes (`app/api/`)
 
@@ -62,9 +65,11 @@ Pages fetch external data client-side via the internal API routes (not directly 
 ### Environment variables
 
 ```
-NEXT_PUBLIC_YOUTUBE_API_KEY       # Primary YouTube Data API key
-NEXT_PUBLIC_YOUTUBE_API_KEY_2     # Fallback YouTube key (quota rotation)
-NEXT_PUBLIC_YOUTUBE_CHANNEL_ID    # PecinoGP YouTube channel ID
+YOUTUBE_API_KEY                   # Primary YouTube Data API key (server-only — do NOT use NEXT_PUBLIC_)
+YOUTUBE_API_KEY_2                 # Fallback YouTube key (quota rotation)
+YOUTUBE_CHANNEL_ID                # PecinoGP YouTube channel ID
+# The NEXT_PUBLIC_* variants still work as a fallback but leak the key into the
+# browser bundle. Rename them in Vercel and delete the public ones.
 DATABASE_URL                      # Neon Postgres (polls, votes, questions)
 ADMIN_TOKEN                       # Enables manual question deletion (admin mode)
 QUESTIONS_TTL_DAYS                # Optional, default 15

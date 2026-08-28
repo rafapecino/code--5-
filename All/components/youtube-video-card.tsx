@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { YouTubeVideo, formatDate } from "@/lib/youtube-service";
+import { YouTubeVideo, formatDate } from "@/lib/youtube-format";
 
 interface YouTubeVideoCardProps {
   video: YouTubeVideo;

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { YouTubeVideo } from "@/lib/youtube-service";
+import { YouTubeVideo } from "@/lib/youtube-format";
 import { decodeHtmlEntities } from "@/lib/utils";
 import { Play } from "lucide-react";
 

@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Logo } from "./logo";
 import { Magnetic } from "./magnetic";
-import { LiveStream } from "@/lib/youtube-service";
+import { LiveStream } from "@/lib/youtube-format";
 import { trackEvent } from "@/lib/analytics";
 
 const NAV_LINKS = [

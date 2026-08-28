@@ -1,37 +1,34 @@
+import "server-only";
+import {
+  getVideoUrl,
+  getVideoEmbedUrl,
+  formatNumber,
+  formatDate,
+} from "./youtube-format";
+
+// Se re-exportan para no romper a quien ya importaba de aquí desde servidor.
+export type {
+  YouTubeChannel,
+  YouTubeVideo,
+  LiveStream,
+} from "./youtube-format";
+export { getVideoUrl, getVideoEmbedUrl, formatNumber, formatDate };
+
+/**
+ * Claves de la API de YouTube. Se prefieren las variables SIN prefijo
+ * NEXT_PUBLIC_: cualquier variable NEXT_PUBLIC_ acaba incrustada en el
+ * JavaScript que descarga el navegador, y una clave de API no debe salir
+ * nunca del servidor. Las NEXT_PUBLIC_ quedan solo como respaldo temporal
+ * mientras se renombran en Vercel.
+ */
 const KEYS = [
-  process.env["NEXT_PUBLIC_YOUTUBE_API_KEY"],
-  process.env["NEXT_PUBLIC_YOUTUBE_API_KEY_2"],
+  process.env["YOUTUBE_API_KEY"] ?? process.env["NEXT_PUBLIC_YOUTUBE_API_KEY"],
+  process.env["YOUTUBE_API_KEY_2"] ??
+    process.env["NEXT_PUBLIC_YOUTUBE_API_KEY_2"],
 ].filter((k): k is string => !!k && k.length > 10);
 
-console.log(`[CONFIG] Número de API Keys detectadas: ${KEYS.length}`);
-if (KEYS.length > 1) {
-  console.log(`[CONFIG] Key 2 empieza por: ${KEYS[1]?.substring(0, 5)}...`);
-}
-
-const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
-
-export interface YouTubeChannel {
-  subscriberCount: string;
-  viewCount: string;
-  videoCount: string;
-}
-
-export interface YouTubeVideo {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  publishedAt: string;
-  viewCount: string;
-  channelTitle: string;
-  isLive?: boolean;
-  error?: string;
-}
-
-export interface LiveStream {
-  isLive: boolean;
-  videoId?: string;
-}
+const CHANNEL_ID =
+  process.env.YOUTUBE_CHANNEL_ID ?? process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
 
 const FALLBACK_LIVE_STATUS: LiveStream = {
   isLive: false,
@@ -111,31 +108,4 @@ export async function getLiveStream(): Promise<LiveStream> {
   }
 }
 
-export function getVideoUrl(videoId: string): string {
-  return `https://www.youtube.com/watch?v=${videoId}`;
-}
 
-export function getVideoEmbedUrl(videoId: string): string {
-  // Dominio de privacidad mejorada: no fija cookies hasta que se reproduce.
-  return `https://www.youtube-nocookie.com/embed/${videoId}`;
-}
-
-export function formatNumber(num: string): string {
-  const n = parseInt(num);
-  if (n >= 1000000) {
-    return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-  }
-  if (n >= 1000) {
-    return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-  }
-  return n.toString();
-}
-
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("es-ES", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}

@@ -8,7 +8,7 @@ import type {
   YouTubeChannel,
   YouTubeVideo,
   LiveStream,
-} from "@/lib/youtube-data";
+} from "@/lib/youtube-format";
 import { YouTubeStats } from "@/All/components/youtube-stats";
 import { FeaturedStack } from "@/All/components/featured-stack";
 import { LatestVideo } from "@/All/components/latest-video";

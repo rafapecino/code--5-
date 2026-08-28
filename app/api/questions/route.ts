@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Pool } from "@neondatabase/serverless";
 import { containsProfanity } from "@/lib/profanity";
+import { comprobarLimite, ipDe } from "@/lib/rate-limit";
 
 // Esquema de validación
 const questionSchema = z.object({
@@ -52,6 +53,14 @@ async function limpiarCaducadas(pool: Pool) {
   }
 }
 
+/**
+ * Freno a la fuerza bruta sobre el token: 10 intentos fallidos por IP cada
+ * 15 minutos. Sin esto, el token se podía probar sin límite.
+ */
+function adminPermitido(req: NextRequest): boolean {
+  return comprobarLimite(`admin:${ipDe(req)}`, 10, 900).permitido;
+}
+
 /** Comparación en tiempo constante, para no filtrar el token carácter a carácter. */
 function tokenValido(recibido: string | null): boolean {
   const esperado = process.env.ADMIN_TOKEN;
@@ -67,6 +76,23 @@ function tokenValido(recibido: string | null): boolean {
 
 // POST: Guardar nueva pregunta
 export async function POST(req: NextRequest) {
+  // Sin esto, un script podía llenar el debate con cientos de preguntas.
+  const limite = comprobarLimite(`preguntas:${ipDe(req)}`, 3, 600);
+  if (!limite.permitido) {
+    return NextResponse.json(
+      {
+        error: {
+          question: {
+            _errors: [
+              "Has enviado varias preguntas seguidas. Espera unos minutos antes de mandar otra.",
+            ],
+          },
+        },
+      },
+      { status: 429, headers: { "Retry-After": String(limite.reintentarEn) } },
+    );
+  }
+
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
   try {
@@ -161,6 +187,9 @@ export async function GET() {
  * Requiere la cabecera `x-admin-token` con el valor de ADMIN_TOKEN.
  */
 export async function DELETE(req: NextRequest) {
+  if (!adminPermitido(req)) {
+    return NextResponse.json({ error: "Demasiados intentos" }, { status: 429 });
+  }
   if (!tokenValido(req.headers.get("x-admin-token"))) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
@@ -194,6 +223,9 @@ export async function DELETE(req: NextRequest) {
  * respuesta se vea debajo de la pregunta.
  */
 export async function PATCH(req: NextRequest) {
+  if (!adminPermitido(req)) {
+    return NextResponse.json({ error: "Demasiados intentos" }, { status: 429 });
+  }
   if (!tokenValido(req.headers.get("x-admin-token"))) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }

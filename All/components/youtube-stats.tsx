@@ -1,6 +1,6 @@
 "use client"
 
-import { YouTubeChannel, formatNumber } from "@/lib/youtube-service"
+import { YouTubeChannel, formatNumber } from "@/lib/youtube-format"
 import { Counter } from "./ui/counter"
 import { Users, PlaySquare, Eye, LucideIcon } from "lucide-react"
 

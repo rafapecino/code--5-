@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-service"
+import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-format"
 import { Star } from "lucide-react"
 
 interface FeaturedVideoCardProps {

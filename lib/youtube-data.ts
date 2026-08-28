@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 export type {
   YouTubeChannel,
@@ -12,8 +13,8 @@ import {
 } from "./youtube-service";
 
 const KEYS = [
-  process.env["NEXT_PUBLIC_YOUTUBE_API_KEY"],
-  process.env["NEXT_PUBLIC_YOUTUBE_API_KEY_2"],
+  process.env["YOUTUBE_API_KEY"] ?? process.env["NEXT_PUBLIC_YOUTUBE_API_KEY"],
+  process.env["YOUTUBE_API_KEY_2"] ?? process.env["NEXT_PUBLIC_YOUTUBE_API_KEY_2"],
 ].filter((k): k is string => !!k && k.length > 10);
 
 console.log(`[CONFIG] Número de API Keys detectadas: ${KEYS.length}`);
@@ -21,7 +22,7 @@ if (KEYS.length > 1) {
   console.log(`[CONFIG] Key 2 empieza por: ${KEYS[1]?.substring(0, 5)}...`);
 }
 
-const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
+const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID ?? process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
 
 const FALLBACK_STATS: YouTubeChannel = {
   subscriberCount: "67900",

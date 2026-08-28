@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-service";
+import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-format";
 import { Star, Play, Calendar, Youtube } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);

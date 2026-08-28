@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Play, Star } from "lucide-react";
-import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-service";
+import { YouTubeVideo, getVideoUrl, formatDate } from "@/lib/youtube-format";
 import { StickyStack } from "@/All/components/motion/sticky-stack";
 import { GlowCard } from "@/All/components/motion/glow-card";
 

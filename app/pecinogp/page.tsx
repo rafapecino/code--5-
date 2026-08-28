@@ -12,7 +12,7 @@ import { ScrollHint } from "@/All/components/scroll-hint";
 import { HeroUnderline } from "@/All/components/hero-underline";
 import { Magnetic } from "@/All/components/magnetic";
 import type { InstagramStats } from "@/lib/instagram-data";
-import type { YouTubeChannel, YouTubeVideo } from "@/lib/youtube-data";
+import type { YouTubeChannel, YouTubeVideo } from "@/lib/youtube-format";
 import { decodeHtmlEntities } from "@/lib/utils";
 import {
   motion,
