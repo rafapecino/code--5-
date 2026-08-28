@@ -39,7 +39,8 @@ Route-specific components live in `app/[route]/components/`.
 - `/api/live` — YouTube live stream detection
 - `/api/polls`, `/api/questions`, `/api/vote` — Poll/Q&A, backed by **Neon Postgres** (`DATABASE_URL`), tables `questions` and `votes`. The files in `data/` are legacy and unused. Poll options are hardcoded in `app/api/polls/route.ts`: to close a poll and open a new one, bump its `id` so vote counts restart while old votes stay in the DB as history.
   - `GET /api/questions` also deletes questions older than `QUESTIONS_TTL_DAYS` (default 15), always keeping the `QUESTIONS_KEEP_LAST` most recent (default 5) so the feed is never empty.
-  - `DELETE /api/questions?id=N` removes one question; requires header `x-admin-token` matching `ADMIN_TOKEN`. Unset `ADMIN_TOKEN` disables deletion entirely.
+  - `DELETE /api/questions?id=N` removes one question; `PATCH /api/questions?id=N` with `{answer}` publishes Manuel's reply (empty string clears it). Both require header `x-admin-token` matching `ADMIN_TOKEN`; unset `ADMIN_TOKEN` disables both entirely.
+  - Answered questions (`answer_text IS NOT NULL`) are exempt from the TTL cleanup, so a reply is never deleted with its question.
 
 ### Data flow
 

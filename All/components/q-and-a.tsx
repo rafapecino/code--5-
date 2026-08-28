@@ -17,7 +17,7 @@ import { Input } from "@/All/components/ui/input";
 import { Textarea } from "@/All/components/ui/textarea";
 import { toast } from "sonner";
 import { useEffect, useState, type ReactNode } from "react";
-import { HelpCircle, Trash2 } from "lucide-react";
+import { HelpCircle, Trash2, MessageCircleReply, LogOut, Check, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const formSchema = z.object({
@@ -37,6 +37,9 @@ interface Question {
   question: string;
   userName: string;
   createdAt: string;
+  /** Respuesta de Manuel Pecino, si ya la ha publicado. */
+  answer?: string | null;
+  answeredAt?: string | null;
 }
 
 /**
@@ -54,6 +57,12 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
   /* Token de administración: habilita el borrado manual de preguntas. */
   const [adminToken, setAdminToken] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  /** Pregunta cuyo borrado está pendiente de confirmar. */
+  const [confirmandoId, setConfirmandoId] = useState<number | null>(null);
+  /** Pregunta que se está respondiendo, y el texto en curso. */
+  const [respondiendoId, setRespondiendoId] = useState<number | null>(null);
+  const [borrador, setBorrador] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   /*
    * El modo admin se activa una sola vez entrando con ?admin=TOKEN. El token
@@ -76,9 +85,58 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
     setAdminToken(localStorage.getItem(KEY));
   }, []);
 
+  function salirDeAdmin() {
+    localStorage.removeItem("pecinogp_admin_token");
+    setAdminToken(null);
+    setConfirmandoId(null);
+    setRespondiendoId(null);
+    toast.success("Has salido del modo administración.");
+  }
+
+  function abrirRespuesta(q: Question) {
+    setRespondiendoId(q.id);
+    setBorrador(q.answer ?? "");
+  }
+
+  async function guardarRespuesta(id: number) {
+    if (!adminToken) return;
+    setGuardando(true);
+    try {
+      const res = await fetch(`/api/questions?id=${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": adminToken,
+        },
+        body: JSON.stringify({ answer: borrador }),
+      });
+      if (res.ok) {
+        const { answer } = await res.json();
+        setQuestions((prev) =>
+          prev.map((q) =>
+            q.id === id
+              ? { ...q, answer, answeredAt: answer ? new Date().toISOString() : null }
+              : q,
+          ),
+        );
+        setRespondiendoId(null);
+        toast.success(answer ? "Respuesta publicada." : "Respuesta retirada.");
+      } else if (res.status === 401) {
+        toast.error("Token de administración no válido.");
+      } else {
+        toast.error("No se pudo guardar la respuesta.");
+      }
+    } catch {
+      toast.error("No se pudo guardar la respuesta.");
+    } finally {
+      setGuardando(false);
+    }
+  }
+
   async function deleteQuestion(id: number) {
     if (!adminToken) return;
     setDeletingId(id);
+    setConfirmandoId(null);
     try {
       const res = await fetch(`/api/questions?id=${id}`, {
         method: "DELETE",
@@ -256,8 +314,19 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
           <div className="flex shrink-0 items-center gap-3">
             {/* Aviso de que el modo administración está activo en este navegador. */}
             {adminToken && (
-              <span className="rounded-full border border-red-600/40 bg-red-600/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-red-400">
+              <span className="inline-flex items-center gap-2 rounded-full border border-red-600/40 bg-red-600/10 py-1 pl-2.5 pr-1 text-[9px] font-black uppercase tracking-widest text-red-400">
                 Modo admin
+                {/* Cierra la sesión de administración en este navegador: útil
+                    si se ha entrado desde un ordenador compartido. */}
+                <button
+                  type="button"
+                  onClick={salirDeAdmin}
+                  title="Salir del modo administración"
+                  aria-label="Salir del modo administración"
+                  className="inline-flex h-5 w-5 items-center justify-center rounded-full transition-colors hover:bg-red-600/30 hover:text-white"
+                >
+                  <LogOut size={11} />
+                </button>
               </span>
             )}
             {questions.length > 0 && (
@@ -295,23 +364,124 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
                     <span className="text-[10px] font-black uppercase tracking-widest text-red-500 italic">
                       {q.userName || "Fan PecinoGP"}
                     </span>
-                    {/* Papelera: solo visible en modo administración. */}
+                    {/* Controles de administración. */}
                     {adminToken && (
-                      <button
-                        type="button"
-                        onClick={() => deleteQuestion(q.id)}
-                        disabled={deletingId === q.id}
-                        aria-label={`Borrar la pregunta de ${q.userName || "Fan PecinoGP"}`}
-                        title="Borrar esta pregunta"
-                        className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/40 transition-colors hover:border-red-600 hover:bg-red-600/15 hover:text-red-400 disabled:opacity-40"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div className="ml-auto flex items-center gap-2">
+                        {confirmandoId === q.id ? (
+                          /* Confirmación en dos pasos: un toque accidental en
+                             el móvil ya no borra nada. */
+                          <>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                              ¿Borrar?
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => deleteQuestion(q.id)}
+                              disabled={deletingId === q.id}
+                              aria-label="Confirmar el borrado"
+                              className="inline-flex h-8 items-center gap-1 rounded-full bg-red-600 px-3 text-[10px] font-black uppercase tracking-widest text-white transition-colors hover:bg-red-500 disabled:opacity-40"
+                            >
+                              <Check size={13} /> Sí
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmandoId(null)}
+                              aria-label="Cancelar el borrado"
+                              className="inline-flex h-8 items-center gap-1 rounded-full border border-white/15 px-3 text-[10px] font-black uppercase tracking-widest text-white/60 transition-colors hover:bg-white/10"
+                            >
+                              <X size={13} /> No
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => abrirRespuesta(q)}
+                              aria-label={`Responder a ${q.userName || "Fan PecinoGP"}`}
+                              title={q.answer ? "Editar la respuesta" : "Responder como Manuel Pecino"}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/40 transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white"
+                            >
+                              <MessageCircleReply size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmandoId(q.id)}
+                              aria-label={`Borrar la pregunta de ${q.userName || "Fan PecinoGP"}`}
+                              title="Borrar esta pregunta"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/40 transition-colors hover:border-red-600 hover:bg-red-600/15 hover:text-red-400"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </>
+                        )}
+                      </div>
                     )}
                   </div>
                   <p className="relative text-gray-200 font-medium leading-relaxed italic text-[15px] md:text-base whitespace-pre-line break-words">
                     &ldquo;{q.question}&rdquo;
                   </p>
+
+                  {/* Respuesta de Manuel, visible para todo el mundo. */}
+                  {q.answer && respondiendoId !== q.id && (
+                    <div className="relative mt-5 rounded-2xl border-l-2 border-red-600 bg-red-600/[0.07] p-4 md:p-5">
+                      <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-red-500 italic">
+                        Responde Manuel Pecino
+                      </span>
+                      <p className="text-[15px] font-medium leading-relaxed text-white/90 whitespace-pre-line break-words">
+                        {q.answer}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Editor de respuesta, solo en modo administración. */}
+                  {adminToken && respondiendoId === q.id && (
+                    <div className="relative mt-5 rounded-2xl border border-white/10 bg-black/40 p-4">
+                      <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-white/50">
+                        Responder como Manuel Pecino
+                      </span>
+                      <Textarea
+                        value={borrador}
+                        onChange={(e) => setBorrador(e.target.value)}
+                        rows={4}
+                        maxLength={1000}
+                        placeholder="Escribe la respuesta..."
+                        className="resize-none rounded-xl border-white/10 bg-white/5 p-4 text-white placeholder:text-white/20 focus:border-red-600 focus:ring-1 focus:ring-red-600"
+                      />
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <Button
+                          type="button"
+                          onClick={() => guardarRespuesta(q.id)}
+                          disabled={guardando}
+                          className="h-9 rounded-xl bg-red-600 px-5 text-[10px] font-black uppercase tracking-widest italic text-white hover:bg-red-500"
+                        >
+                          {guardando ? "Guardando..." : "Publicar respuesta"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setRespondiendoId(null)}
+                          className="h-9 rounded-xl border-white/15 bg-transparent px-5 text-[10px] font-black uppercase tracking-widest italic text-white/60 hover:bg-white/10"
+                        >
+                          Cancelar
+                        </Button>
+                        {q.answer && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBorrador("");
+                              guardarRespuesta(q.id);
+                            }}
+                            className="ml-auto text-[10px] font-black uppercase tracking-widest text-white/40 underline transition-colors hover:text-red-400"
+                          >
+                            Quitar respuesta
+                          </button>
+                        )}
+                      </div>
+                      <p className="mt-2 text-[10px] text-white/25">
+                        {borrador.length}/1000
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </AnimatePresence>

@@ -36,6 +36,9 @@ async function limpiarCaducadas(pool: Pool) {
     const { rowCount } = await pool.query(
       `DELETE FROM questions
         WHERE created_at < NOW() - ($1 || ' days')::interval
+          -- Una pregunta contestada por Manuel es contenido del canal: no
+          -- caduca, para no tirar la respuesta con ella.
+          AND answer_text IS NULL
           AND id NOT IN (
             SELECT id FROM questions ORDER BY created_at DESC LIMIT $2
           )`,
@@ -128,7 +131,8 @@ export async function GET() {
 
     // Seleccionamos solo las NO respondidas, ordenadas por fecha (más recientes primero)
     const result = await pool.query(`
-      SELECT id, question_text as question, user_name as "userName", created_at as "createdAt", is_answered as answered
+      SELECT id, question_text as question, user_name as "userName", created_at as "createdAt",
+             is_answered as answered, answer_text as answer, answered_at as "answeredAt"
       FROM questions
       WHERE is_answered = FALSE
       ORDER BY created_at DESC
@@ -176,6 +180,65 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error("Error DELETE question:", error);
     return NextResponse.json({ error: "No se pudo borrar" }, { status: 500 });
+  } finally {
+    await pool.end();
+  }
+}
+
+/**
+ * PATCH: publica (o edita) la respuesta de Manuel Pecino a una pregunta.
+ * Enviar `answer` vacío retira la respuesta. Requiere `x-admin-token`.
+ *
+ * Responder no marca la pregunta como respondida en `is_answered`: esa bandera
+ * la oculta del listado, y aquí lo que queremos justo es lo contrario, que la
+ * respuesta se vea debajo de la pregunta.
+ */
+export async function PATCH(req: NextRequest) {
+  if (!tokenValido(req.headers.get("x-admin-token"))) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
+  const id = Number(new URL(req.url).searchParams.get("id"));
+  if (!Number.isInteger(id) || id <= 0) {
+    return NextResponse.json({ error: "Id no válido" }, { status: 400 });
+  }
+
+  let answer: string;
+  try {
+    answer = String((await req.json())?.answer ?? "").trim();
+  } catch {
+    return NextResponse.json({ error: "Cuerpo no válido" }, { status: 400 });
+  }
+
+  if (answer.length > 1000) {
+    return NextResponse.json(
+      { error: "La respuesta no puede pasar de 1000 caracteres" },
+      { status: 400 },
+    );
+  }
+
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  try {
+    const { rowCount } = await pool.query(
+      `UPDATE questions
+          SET answer_text = $2,
+              answered_at = CASE WHEN $2::text IS NULL THEN NULL ELSE NOW() END
+        WHERE id = $1`,
+      [id, answer === "" ? null : answer],
+    );
+    if (!rowCount) {
+      return NextResponse.json(
+        { error: "La pregunta ya no existe" },
+        { status: 404 },
+      );
+    }
+    return NextResponse.json({ id, answer: answer === "" ? null : answer });
+  } catch (error) {
+    console.error("Error PATCH question:", error);
+    return NextResponse.json(
+      { error: "No se pudo guardar la respuesta" },
+      { status: 500 },
+    );
   } finally {
     await pool.end();
   }
