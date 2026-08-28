@@ -17,7 +17,7 @@ import { Input } from "@/All/components/ui/input";
 import { Textarea } from "@/All/components/ui/textarea";
 import { toast } from "sonner";
 import { useEffect, useState, type ReactNode } from "react";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const formSchema = z.object({
@@ -51,6 +51,53 @@ interface Question {
 export function QAndA({ aside }: { aside?: ReactNode }) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /* Token de administración: habilita el borrado manual de preguntas. */
+  const [adminToken, setAdminToken] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  /*
+   * El modo admin se activa una sola vez entrando con ?admin=TOKEN. El token
+   * se guarda en el navegador y se limpia de la URL para no dejarlo en el
+   * historial ni en lo que se comparta. Quien no lo tenga no ve nada distinto:
+   * el servidor vuelve a comprobarlo en cada borrado, así que ocultar el botón
+   * no es la medida de seguridad, solo la parte visible.
+   */
+  useEffect(() => {
+    const KEY = "pecinogp_admin_token";
+    const fromUrl = new URLSearchParams(window.location.search).get("admin");
+    if (fromUrl) {
+      localStorage.setItem(KEY, fromUrl);
+      setAdminToken(fromUrl);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("admin");
+      window.history.replaceState({}, "", url);
+      return;
+    }
+    setAdminToken(localStorage.getItem(KEY));
+  }, []);
+
+  async function deleteQuestion(id: number) {
+    if (!adminToken) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/questions?id=${id}`, {
+        method: "DELETE",
+        headers: { "x-admin-token": adminToken },
+      });
+      if (res.ok) {
+        setQuestions((prev) => prev.filter((q) => q.id !== id));
+        toast.success("Pregunta borrada.");
+      } else if (res.status === 401) {
+        toast.error("Token de administración no válido.");
+      } else {
+        toast.error("No se pudo borrar la pregunta.");
+      }
+    } catch {
+      toast.error("No se pudo borrar la pregunta.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -206,12 +253,20 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
           <h3 className="text-xl md:text-2xl font-black text-white italic tracking-tighter uppercase">
             Debate Comunitario
           </h3>
-          {questions.length > 0 && (
-            <span className="shrink-0 text-[10px] font-black uppercase tracking-widest text-white/30">
-              {questions.length}{" "}
-              {questions.length === 1 ? "pregunta" : "preguntas"}
-            </span>
-          )}
+          <div className="flex shrink-0 items-center gap-3">
+            {/* Aviso de que el modo administración está activo en este navegador. */}
+            {adminToken && (
+              <span className="rounded-full border border-red-600/40 bg-red-600/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-red-400">
+                Modo admin
+              </span>
+            )}
+            {questions.length > 0 && (
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/30">
+                {questions.length}{" "}
+                {questions.length === 1 ? "pregunta" : "preguntas"}
+              </span>
+            )}
+          </div>
         </div>
         {questions.length > 0 ? (
           /* Una sola columna a todo el ancho de la tarjeta (~700 px): son
@@ -240,6 +295,19 @@ export function QAndA({ aside }: { aside?: ReactNode }) {
                     <span className="text-[10px] font-black uppercase tracking-widest text-red-500 italic">
                       {q.userName || "Fan PecinoGP"}
                     </span>
+                    {/* Papelera: solo visible en modo administración. */}
+                    {adminToken && (
+                      <button
+                        type="button"
+                        onClick={() => deleteQuestion(q.id)}
+                        disabled={deletingId === q.id}
+                        aria-label={`Borrar la pregunta de ${q.userName || "Fan PecinoGP"}`}
+                        title="Borrar esta pregunta"
+                        className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/40 transition-colors hover:border-red-600 hover:bg-red-600/15 hover:text-red-400 disabled:opacity-40"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                   <p className="relative text-gray-200 font-medium leading-relaxed italic text-[15px] md:text-base whitespace-pre-line break-words">
                     &ldquo;{q.question}&rdquo;
